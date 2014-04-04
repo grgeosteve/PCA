@@ -1,0 +1,10 @@
+Cov.Eigenvectors PC1 PC2 PC3
+Band1 0.000 1.000 -0.000
+Band2 0.838 0.000 -0.545
+Band3 0.545 0.000 0.838
+
+Bands PC1 PC2 PC3
+Cov.Eigenvalues 3784.547 2423.125 135.627
+Sum of Eigenvalues 3784.547 6207.672 6343.299
+Eigenvalues/Sum 0.597 0.979 1.000
+Percentages(%) 59.7 97.9 100.0

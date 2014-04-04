@@ -1,0 +1,31 @@
+# Mandatory items:
+
+
+[general]
+name=PCA
+qgisMinimumVersion=2.0
+description=Principal Component Analysis for rasters
+version=0.1
+author=Stavros Georgousis
+email=grgeosteve@gmail.com
+
+# end of mandatory metadata
+
+# Optional items:
+
+# Uncomment the following line and add your changelog entries:
+# changelog=
+
+# tags are comma separated with spaces allowed
+tags=raster,analysis,principal components analysis,pca
+
+homepage=
+tracker=
+repository=
+icon=icon.png
+# experimental flag
+experimental=False
+
+# deprecated flag (applies to the whole plugin, not just a single version
+deprecated=False
+
