@@ -21,7 +21,7 @@ tags=raster,analysis,principal components analysis,pca
 
 homepage=
 tracker=
-repository=
+repository=https://github.com/grgeosteve/PCA.git
 icon=icon.png
 # experimental flag
 experimental=False
