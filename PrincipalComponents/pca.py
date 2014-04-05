@@ -34,7 +34,7 @@ def pca(inputRasterFileName, outputRasterFileName, outPCBands):
     # Open and assign the contents of the raster file to a dataset
     dataset = gdal.Open(inputRasterFileName, GA_ReadOnly)
 
-    # Compute raster covariance matrix    
+    # Compute raster correlation matrix    
     bandMean = numpy.empty(dataset.RasterCount)
     for i in xrange(dataset.RasterCount):
         band = dataset.GetRasterBand(i+1).ReadAsArray(0, 0,
@@ -42,7 +42,7 @@ def pca(inputRasterFileName, outputRasterFileName, outPCBands):
                                                       dataset.RasterYSize)
         bandMean[i] = numpy.amin(band, axis = None)
 
-    covMatrix = numpy.empty((dataset.RasterCount, dataset.RasterCount))
+    corrMatrix = numpy.empty((dataset.RasterCount, dataset.RasterCount))
     for i in xrange(dataset.RasterCount):
         band = dataset.GetRasterBand(i+1)
         bandArray = band.ReadAsArray(0, 0,
@@ -50,31 +50,32 @@ def pca(inputRasterFileName, outputRasterFileName, outPCBands):
                                      dataset.RasterYSize).astype(numpy.float).flatten()
 
         bandArray = bandArray - bandMean[i]
-        covMatrix[i][i] = numpy.var(bandArray)
+        corrMatrix[i][i] = numpy.corrcoef(bandArray, bandArray)[0][1]
 
     band = None
     bandArray = None
 
-    for i in xrange(1, dataset.RasterCount):
-        band1 = dataset.GetRasterBand(i+1)
+    for i in xrange(1, dataset.RasterCount + 1):
+        band1 = dataset.GetRasterBand(i)
         bandArray1 = band1.ReadAsArray(0, 0,
                                        dataset.RasterXSize,
                                        dataset.RasterYSize).astype(numpy.float).flatten()
-        bandArray1 = bandArray1 - bandMean[i]
+        bandArray1 = bandArray1 - bandMean[i - 1]
 
-        for j in xrange(i + 1, dataset.RasterCount):
-            band2 = dataset.GetRasterBand(j+1)
+        for j in xrange(i + 1, dataset.RasterCount + 1):
+            band2 = dataset.GetRasterBand(j)
             bandArray2 = band2.ReadAsArray(0, 0,
                                            dataset.RasterXSize,
                                            dataset.RasterYSize).astype(numpy.float).flatten()
 
-            bandArray2 = bandArray2 - bandMean[j]
+            bandArray2 = bandArray2 - bandMean[j - 1]
 
-            covMatrix[i][j] = covMatrix[j][i] = numpy.cov(bandArray1, bandArray2)[0][1]
+            corrMatrix[j - 1][i - 1] = corrMatrix[i - 1][j - 1] = numpy.corrcoef(bandArray1, bandArray2)[0][1]
 
     # Calculate the eigenvalues and the eigenvectors of the covariance
-    # matrix and calculate the principal components        
-    eigenvals, eigenvectors = numpy.linalg.eig(covMatrix)
+    # matrix and calculate the principal components
+    print corrMatrix
+    eigenvals, eigenvectors = numpy.linalg.eig(corrMatrix)
 
     # Just for testing
     print eigenvals
@@ -123,6 +124,18 @@ def pca(inputRasterFileName, outputRasterFileName, outPCBands):
 
     # write the statistics of the PCA into a file
     # first organize the statistics into lists
+    corrBandBand = [['' for i in xrange(dataset.RasterCount + 1)] for j in xrange(dataset.RasterCount + 1)]
+    corrBandBand[0][0] = "Correlation Matrix"
+    for j in xrange(1, 1 + dataset.RasterCount):
+        header = 'Band' + str(j)
+        corrBandBand[0][j] = header
+    for i in xrange(1, 1 + dataset.RasterCount):
+        vertical = 'Band' + str(i)
+        corrBandBand[i][0] = vertical
+    for i in xrange(1, 1 + dataset.RasterCount):
+        for j in xrange(1, 1 + dataset.RasterCount):
+            corrBandBand[i][j] = "%.3f" % corrMatrix[i - 1, j - 1]
+
     covBandPC = [['' for i in xrange(dataset.RasterCount + 1)] for j in xrange(dataset.RasterCount + 1)]
     covBandPC[0][0] = "Cov.Eigenvectors"
     for j in xrange(1, 1 + dataset.RasterCount):
@@ -154,12 +167,23 @@ def pca(inputRasterFileName, outputRasterFileName, outPCBands):
         covEigenvalMat[4][i + 1] = "%.1f" % (eigvalSum / sum * 100.0)
 
     # Debug printout
+    print corrBandBand
     print covBandPC
     print covEigenvalMat
 
     statText = ""
     statFileName = outputRasterFileName.split('.')[0] + "_statistics.txt"
     statFile = open(statFileName, "w")
+
+    for i in xrange(len(corrBandBand)):
+        for j in xrange(len(corrBandBand)): # symmetrical matrix
+            statText = statText + corrBandBand[i][j]
+            if (j < len(corrBandBand[0]) - 1):
+                statText = statText + " "
+        statText = statText + "\n"
+
+    statText = statText + "\n"
+
     for i in xrange(len(covBandPC)):
         for j in xrange(len(covBandPC[0])):
             statText = statText + covBandPC[i][j]
