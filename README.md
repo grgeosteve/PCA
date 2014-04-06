@@ -4,7 +4,7 @@ This is a QGIS plugin to perform Principal Components Analysis for raster data.
 
 Manual installation instructions:
 
-For Linux:
+For GNU/Linux:
 
 1. Download the source code folder named PrincipalComponents or the whole repository as zip
 2. If you downloaded the zip file extract it.
