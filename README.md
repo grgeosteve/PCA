@@ -2,7 +2,7 @@ PCA
 
 This is a QGIS plugin to perform Principal Components Analysis for raster data.
 
-This plugin is now an official qgis plugin.
+This plugin is now an official QGIS plugin.
 
 If you want to install this plugin in QGIS, installation from the official QGIS plugin repository is
 recommended.
