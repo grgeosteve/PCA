@@ -19,7 +19,7 @@ email=grgeosteve@gmail.com
 # tags are comma separated with spaces allowed
 tags=raster,analysis,principal components analysis,pca
 
-homepage=
+homepage=https://github.com/grgeosteve/PCA
 tracker=https://github.com/grgeosteve/PCA/issues
 repository=https://github.com/grgeosteve/PCA.git
 icon=icon.png
