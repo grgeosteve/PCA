@@ -6,7 +6,7 @@
  Principal Component Analysis for rasters
                              -------------------
         begin                : 2013-04-29
-        copyright            : (C) 2013 by Stavros Georgousis
+        copyright            : (C) 2013, 2014 by Stavros Georgousis
         email                : grgeosteve@gmail.com
  ***************************************************************************/
 
@@ -137,6 +137,7 @@ class PrincipalComponentsDialog(QtGui.QDialog):
                     # Split the dirty suffix string where a space occurs which
                     # indicates where the selected filetype suffix ends
                     splittedDirtySuffixStr = dirtySuffixStr.split(' ')
+                suffixStr = splittedDirtySuffixStr[0]
             else:
                 # WE NEED TO CHECK IF THE SUPPLIED SUFFIX CORRESPONDS TO THE
                 # SELECTED FILETYPE
