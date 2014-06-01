@@ -109,6 +109,7 @@ class PrincipalComponentsDialog(QtGui.QDialog):
                 existingSuffix = splittedFileName[len(splittedFileName) - 1]
                 if existingSuffix is not None:
                     suffixExists = True
+                    
 
             # Extract the suffix from the selected filetype filter
             # Convert the selected filter from QString to python string
@@ -154,6 +155,8 @@ class PrincipalComponentsDialog(QtGui.QDialog):
                     # indicates where the selected filetype suffix ends
                     splittedDirtySuffixStr = dirtySuffixStr.split(' ')
                     suffixStr = splittedDirtySuffixStr[0]
+
+                    
                 else:
                     suffixList = []
                     if suffixNum == 2:
@@ -163,9 +166,10 @@ class PrincipalComponentsDialog(QtGui.QDialog):
                         suffixList.append(splittedDirtySuffixStr[0])
 
                         # Extract the second suffix and put it in the list
-                        dirtySuffixStr = splittedFitler[2]
+                        dirtySuffixStr = splittedFilter[2]
                         splittedDirtySuffixStr = dirtySuffixStr.split(')')
                         suffixList.append(splittedDirtySuffixStr[0])
+
                     else:
                         # Extract the first suffix and put it in the list
                         dirtySuffixStr = splittedFilter[1]
@@ -182,7 +186,21 @@ class PrincipalComponentsDialog(QtGui.QDialog):
                             dirtySuffixStr = splittedFilter[i]
                             splittedDirtySuffixStr = dirtySuffixStr.split(' ')
                             suffixList.append(splittedDirtySuffixStr[0])
-                        # TODO: Check if the user assigned suffix is in the list
+
+                    # Find if the user supplied suffix is valid for the
+                    # chosen filetype and set it as the filename suffix
+                    isValidSuffix = False
+                    userSuffix = '.' + existingSuffix
+                    for i in xrange(suffixNum + 1):
+                        if userSuffix == suffixList[i]:
+                            isValidSuffix = True
+                            suffixStr = userSuffix
+                            break
+
+                    # If the supplied suffix is not valid replace it
+                    # with the default suffix for the chosen filetype
+                    if not isValidSuffix:
+                        suffixStr = suffixList[0]         
 
             self.outFileName = baseFileName + suffixStr
 
