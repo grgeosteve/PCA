@@ -21,6 +21,7 @@
 """
 
 from PyQt4 import QtGui
+from PyQt4 import QtCore
 from ui_principalcomponents import Ui_PrincipalComponents
 from osgeo import gdal
 from pca import pca
@@ -56,7 +57,8 @@ class PrincipalComponentsDialog(QtGui.QDialog):
         self.ui.okButton.clicked.connect(self.calcPca)
 
     def showOpenDialog(self):
-        self.inFileName = str(QtGui.QFileDialog.getOpenFileName(self, "Input Raster File:"))
+        self.inFileName = str(QtGui.QFileDialog.getOpenFileName(self,
+                                                        "Input Raster File:"))
 
         gdal.AllRegister()
         dataset = gdal.Open(str(self.inFileName))
@@ -68,16 +70,122 @@ class PrincipalComponentsDialog(QtGui.QDialog):
             self.ui.comboBox.addItem(str(i))
         self.ui.comboBox.setDisabled(False)
 
-        if self.inFileName != None and self.outFileName != None and self.rasterBands != 0:
+        if self.inFileName is not None and self.outFileName is not None and self.rasterBands != 0:
             self.ui.okButton.setDisabled(False)
-        
+
         self.ui.lineEdit.clear()
         self.ui.lineEdit.setText(self.inFileName)
 
     def showSaveDialog(self):
-        self.outFileName = str(QtGui.QFileDialog.getSaveFileName(self, "Output Raster File:"))
+        #self.outFileName = str(QtGui.QFileDialog.getSaveFileName(self,
+        #        'Output Raster File:', '', '*.tif'))
 
-        if self.inFileName != None and self.outFileName != None and self.rasterBands != 0:
+        # Declare the filetype in which to save the output file
+        # Currently the plugin only supports GeoTIFF files
+        fileTypes = 'GeoTIFF Files (*.tif *.tiff)'
+        fileName, filter = QtGui.QFileDialog.getSaveFileNameAndFilter(
+            self, 'Output Raster File:', '', fileTypes)
+
+        if fileName is None:
+            return
+        else:
+            # Extract the base filename without the suffix if it exists
+            # Convert the fileName from QString to python string
+            fileNameStr = str(fileName)
+
+            # Split the fileNameStr where/if a '.' exists
+            splittedFileName = fileNameStr.split('.')
+
+            # Finally extract the base filename from the splitted filename
+            baseFileName = splittedFileName[0]
+
+            # Initialize the suffix string
+            suffixStr = ''
+
+            # Check if the user entered a suffix
+            suffixExists = False
+            existingSuffix = ''
+            if len(splittedFileName) != 1:
+                existingSuffix = splittedFileName[len(splittedFileName) - 1]
+                if existingSuffix is not None:
+                    suffixExists = True
+
+            # Extract the suffix from the selected filetype filter
+            # Convert the selected filter from QString to python string
+            filterStr = str(filter)
+
+            # Split the filter string where/if an asterisk (*) exists
+            # I do this to find where the first suffix of the selected filetype
+            # occurs
+            splittedFilter = filterStr.split('*')
+
+            # If a suffix is not supplied by the user it will be automatically
+            # added to the filename. The default suffix will be the first
+            # available suffix for the chosen filetype
+            if not suffixExists:
+                # Extract the 'dirty' suffix string where the first suffix is located
+                dirtySuffixStr = splittedFilter[1]
+
+                # Find out the number of the available suffixes
+                suffixNum = len(splittedFilter) - 1
+
+                if suffixNum == 1:
+                    # Split the dirty suffix string where a ')' occurs
+                    # which indicates where the selected filetype ends
+                    splittedDirtySuffixStr = dirtySuffixStr.split(')')
+                else:
+                    # Split the dirty suffix string where a space occurs which
+                    # indicates where the selected filetype suffix ends
+                    splittedDirtySuffixStr = dirtySuffixStr.split(' ')
+            else:
+                # WE NEED TO CHECK IF THE SUPPLIED SUFFIX CORRESPONDS TO THE
+                # SELECTED FILETYPE
+
+                # Extract all the suffixes available for the selected filetype
+                # First find out the number of the available suffixes
+                suffixNum = len(splittedFilter) - 1
+
+                if suffixNum == 1:
+                    # Extract the 'dirty' suffix string where the suffix is located
+                    dirtySuffixStr = splittedFilter[1]
+
+                    # Split the dirty suffix string where a space occurs which
+                    # indicates where the selected filetype suffix ends
+                    splittedDirtySuffixStr = dirtySuffixStr.split(' ')
+                    suffixStr = splittedDirtySuffixStr[0]
+                else:
+                    suffixList = []
+                    if suffixNum == 2:
+                        # Extract the first suffix and put it in the list
+                        dirtySuffixStr = splittedFilter[1]
+                        splittedDirtySuffixStr = dirtySuffixStr.split(' ')
+                        suffixList.append(splittedDirtySuffixStr[0])
+
+                        # Extract the second suffix and put it in the list
+                        dirtySuffixStr = splittedFitler[2]
+                        splittedDirtySuffixStr = dirtySuffixStr.split(')')
+                        suffixList.append(splittedDirtySuffixStr[0])
+                    else:
+                        # Extract the first suffix and put it in the list
+                        dirtySuffixStr = splittedFilter[1]
+                        splittedDirtySuffixStr = dirtySuffixStr.split(' ')
+                        suffixList.append(splittedDirtySuffixStr[0])
+
+                        # Extract the last suffix and put it in the list
+                        dirtySuffixStr = splittedFilter[suffixNum]
+                        splittedDirtySuffixStr = dirtySuffixStr.split(')')
+                        suffixList.append(splittedDirtySuffixStr[0])
+
+                        # Extract the rest of the suffixes and put them in the list
+                        for i in xrange(2, suffixNum):
+                            dirtySuffixStr = splittedFilter[i]
+                            splittedDirtySuffixStr = dirtySuffixStr.split(' ')
+                            suffixList.append(splittedDirtySuffixStr[0])
+                        # TODO: Check if the user assigned suffix is in the list
+
+            self.outFileName = baseFileName + suffixStr
+
+        if self.inFileName is not None and self.outFileName is not None and self.rasterBands != 0:
             self.ui.okButton.setDisabled(False)
         self.ui.lineEdit_2.clear()
         self.ui.lineEdit_2.setText(self.outFileName)
