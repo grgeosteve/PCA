@@ -1,0 +1,15 @@
+Correlation Matrix Band1 Band2 Band3
+Band1 1.000 0.976 0.943
+Band2 0.976 1.000 0.981
+Band3 0.943 0.981 1.000
+
+Cov.Eigenvectors PC1 PC2 PC3
+Band1 -0.574 -0.734 0.362
+Band2 -0.582 0.055 -0.811
+Band3 -0.576 0.677 0.459
+
+Bands PC1 PC2 PC3
+Cov.Eigenvalues 2.934 0.057 0.009
+Sum of Eigenvalues 2.934 2.991 3.000
+Eigenvalues/Sum 0.978 0.997 1.000
+Percentages(%) 97.8 99.7 100.0
