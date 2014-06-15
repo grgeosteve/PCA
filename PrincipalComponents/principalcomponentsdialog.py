@@ -83,7 +83,7 @@ class PrincipalComponentsDialog(QtGui.QDialog):
 
         self.propWidget.pcsNumComboBox.clear()
         for i in range(self.rasterBands, 0, -1):
-            self.pcsNumComboBox.addItem(str(i))
+            self.propWidget.pcsNumComboBox.addItem(str(i))
         self.propWidget.pcsNumComboBox.setDisabled(False)
 
         if self.inFileName is not None and self.outFileName is not None and self.rasterBands != 0:
