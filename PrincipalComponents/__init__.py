@@ -6,7 +6,7 @@
  Principal Component Analysis for rasters
                              -------------------
         begin                : 2013-04-29
-        copyright            : (C) 2013 by Stavros Georgousis
+        copyright            : (C) 2013, 2014 by Stavros Georgousis
         email                : grgeosteve@gmail.com
  ***************************************************************************/
 
@@ -31,7 +31,7 @@ def description():
 
 
 def version():
-    return "Version 0.2"
+    return "Version 0.3"
 
 
 def icon():

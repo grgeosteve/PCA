@@ -4,7 +4,7 @@
 # Principal Component Analysis for rasters
 #                             -------------------
 #        begin                : 2013-04-29
-#        copyright            : (C) 2013 by Stavros Georgousis
+#        copyright            : (C) 2013, 2014 by Stavros Georgousis
 #        email                : grgeosteve@gmail.com
 # ***************************************************************************/
 # 
@@ -18,12 +18,11 @@
 # ***************************************************************************/
 
 # CONFIGURATION
-PLUGIN_UPLOAD = $(CURDIR)/plugin_upload.py
 
 # Makefile for a PyQGIS plugin 
 
 # translation
-SOURCES = principalcomponents.py ui_principalcomponents.py __init__.py principalcomponentsdialog.py
+SOURCES = principalcomponents.py __init__.py principalcomponentsdialog.py propertieswidget.py helpwidget.py
 #TRANSLATIONS = i18n/principalcomponents_en.ts
 TRANSLATIONS = 
 
@@ -31,11 +30,11 @@ TRANSLATIONS =
 
 PLUGINNAME = principalcomponents
 
-PY_FILES = principalcomponents.py principalcomponentsdialog.py __init__.py
+PY_FILES = principalcomponents.py principalcomponentsdialog.py __init__.py propertieswidget.py pca.py helpwidget.py
 
 EXTRAS = icon.png 
 
-UI_FILES = ui_principalcomponents.py
+UI_FILES = 
 
 RESOURCE_FILES = resources_rc.py
 
@@ -91,9 +90,6 @@ package: compile
 		rm -f $(PLUGINNAME).zip
 		git archive --prefix=$(PLUGINNAME)/ -o $(PLUGINNAME).zip $(VERSION)
 		echo "Created package: $(PLUGINNAME).zip"
-
-upload: zip
-	$(PLUGIN_UPLOAD) $(PLUGINNAME).zip
 
 # transup
 # update .ts translation files

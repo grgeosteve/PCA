@@ -21,40 +21,56 @@
 """
 
 from PyQt4 import QtGui
-from PyQt4 import QtCore
-from ui_principalcomponents import Ui_PrincipalComponents
 from osgeo import gdal
 from pca import pca
+from propertieswidget import PropertiesWidget
+from helpwidget import HelpWidget
 # create the dialog for zoom to point
 
 
 class PrincipalComponentsDialog(QtGui.QDialog):
     def __init__(self):
         QtGui.QDialog.__init__(self)
-        # Set up the user interface from Designer.
-        self.ui = Ui_PrincipalComponents()
-        self.ui.setupUi(self)
 
-        self.setWindowTitle("PCA")
+        # Set up the user interface
+        self.initUI()
+
+        # Initial configuration of the user interface
+        self.configUI()
+
+        # Set up the signals
+        self.connectSignals()
 
         # Additional code
         self.inFileName = None
         self.outFileName = None
         self.rasterBands = 0
 
-        # For now disable some features
-        self.ui.lineEdit.setReadOnly(True)
-        self.ui.lineEdit_2.setReadOnly(True)
-        self.ui.comboBox.setDisabled(True)
-        self.ui.okButton.setDisabled(True)
+    def initUI(self):
+        self.setWindowTitle("PCA")
+        # Add a main layout for the dialog
+        self.mainLayout = QtGui.QHBoxLayout()
+        
+        self.tabs = QtGui.QTabWidget()
+        self.propWidget = PropertiesWidget()
+        self.tabs.addTab(self.propWidget, self.tr("Properties"))
+        self.helpWidget = HelpWidget()
+        self.tabs.addTab(self.helpWidget, self.tr("Help"))
 
-        # Connect signals
-        #self.ui.cancelButton.clicked.connect(self.close)
-        self.ui.cancelButton.clicked.connect(self.close)
+        self.mainLayout.addWidget(self.tabs)
+        self.setLayout(self.mainLayout)
 
-        self.ui.pushButton.clicked.connect(self.showOpenDialog)
-        self.ui.pushButton_2.clicked.connect(self.showSaveDialog)
-        self.ui.okButton.clicked.connect(self.calcPca)
+    def configUI(self):
+        self.propWidget.inputLineEdit.setReadOnly(True)
+        self.propWidget.outputLineEdit.setReadOnly(True)
+        self.propWidget.pcsNumComboBox.setDisabled(True)
+        self.propWidget.okButton.setDisabled(True)
+
+    def connectSignals(self):
+        self.propWidget.cancelButton.clicked.connect(self.close)
+        self.propWidget.inputButton.clicked.connect(self.showOpenDialog)
+        self.propWidget.outputButton.clicked.connect(self.showSaveDialog)
+        self.propWidget.okButton.clicked.connect(self.calcPca)
 
     def showOpenDialog(self):
         self.inFileName = str(QtGui.QFileDialog.getOpenFileName(self,
@@ -65,16 +81,16 @@ class PrincipalComponentsDialog(QtGui.QDialog):
         self.rasterBands = dataset.RasterCount
         dataset = None
 
-        self.ui.comboBox.clear()
+        self.propWidget.pcsNumComboBox.clear()
         for i in range(self.rasterBands, 0, -1):
-            self.ui.comboBox.addItem(str(i))
-        self.ui.comboBox.setDisabled(False)
+            self.pcsNumComboBox.addItem(str(i))
+        self.propWidget.pcsNumComboBox.setDisabled(False)
 
         if self.inFileName is not None and self.outFileName is not None and self.rasterBands != 0:
-            self.ui.okButton.setDisabled(False)
+            self.propWidget.okButton.setDisabled(False)
 
-        self.ui.lineEdit.clear()
-        self.ui.lineEdit.setText(self.inFileName)
+        self.propWidget.inputLineEdit.clear()
+        self.propWidget.inputLineEdit.setText(self.inFileName)
 
     def showSaveDialog(self):
         #self.outFileName = str(QtGui.QFileDialog.getSaveFileName(self,
@@ -109,7 +125,7 @@ class PrincipalComponentsDialog(QtGui.QDialog):
                 existingSuffix = splittedFileName[len(splittedFileName) - 1]
                 if existingSuffix is not None:
                     suffixExists = True
-                    
+
 
             # Extract the suffix from the selected filetype filter
             # Convert the selected filter from QString to python string
@@ -156,7 +172,7 @@ class PrincipalComponentsDialog(QtGui.QDialog):
                     splittedDirtySuffixStr = dirtySuffixStr.split(' ')
                     suffixStr = splittedDirtySuffixStr[0]
 
-                    
+
                 else:
                     suffixList = []
                     if suffixNum == 2:
@@ -200,17 +216,17 @@ class PrincipalComponentsDialog(QtGui.QDialog):
                     # If the supplied suffix is not valid replace it
                     # with the default suffix for the chosen filetype
                     if not isValidSuffix:
-                        suffixStr = suffixList[0]         
+                        suffixStr = suffixList[0]
 
             self.outFileName = baseFileName + suffixStr
 
         if self.inFileName is not None and self.outFileName is not None and self.rasterBands != 0:
-            self.ui.okButton.setDisabled(False)
-        self.ui.lineEdit_2.clear()
-        self.ui.lineEdit_2.setText(self.outFileName)
+            self.propWidget.okButton.setDisabled(False)
+        self.propWidget.outputLineEdit.clear()
+        self.propWidget.outputLineEdit.setText(self.outFileName)
 
     def pcNum(self):
-        pcBands = int(str(self.ui.comboBox.currentText()))
+        pcBands = int(str(self.propWidget.pcsNumComboBox.currentText()))
         return pcBands
 
     def calcPca(self):
