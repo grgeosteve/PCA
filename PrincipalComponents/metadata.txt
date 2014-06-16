@@ -5,7 +5,7 @@
 name=PCA
 qgisMinimumVersion=2.0
 description=Principal Component Analysis for rasters
-version=0.3.0
+version=0.3.1
 author=Stavros Georgousis
 email=grgeosteve@gmail.com
 
