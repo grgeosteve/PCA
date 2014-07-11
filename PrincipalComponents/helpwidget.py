@@ -43,7 +43,7 @@ class HelpWidget(QtGui.QWidget):
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "</style></head><body style=\" font-family:\'Ubuntu\'; font-size:11pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:30px; margin-bottom:12px; margin-left:12px; margin-right:12px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:14pt; font-weight:600;\">PCA plugin for QGIS</span></p>\n"
-"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:12px; margin-right:12px; -qt-block-indent:0; text-indent:0px;\">PCA version 0.3.0</p>\n"
+"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:12px; margin-right:12px; -qt-block-indent:0; text-indent:0px;\">PCA version 0.3.1</p>\n"
 "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:12px; margin-right:12px; -qt-block-indent:0; text-indent:0px;\">Author: Stavros Georgousis</p>\n"
 "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:12px; margin-right:12px; -qt-block-indent:0; text-indent:0px;\">PCA is licensed under GNU General Public Licence version 3+<br /></p>\n"
 "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:12px; margin-right:12px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt; font-weight:600;\">Description</span></p>\n"
