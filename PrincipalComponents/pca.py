@@ -74,12 +74,13 @@ def pca(inputRasterFileName, outputRasterFileName, outPCBands):
 
     # Calculate the eigenvalues and the eigenvectors of the covariance
     # matrix and calculate the principal components
-    print corrMatrix
+    # debug print
+    #print corrMatrix
     eigenvals, eigenvectors = numpy.linalg.eig(corrMatrix)
 
     # Just for testing
-    print eigenvals
-    print eigenvectors
+    #print eigenvals
+    #print eigenvectors
 
     # Create a lookup table and sort it according to
     # the index of the eigenvalues table
@@ -167,9 +168,9 @@ def pca(inputRasterFileName, outputRasterFileName, outPCBands):
         covEigenvalMat[4][i + 1] = "%.1f" % (eigvalSum / sum * 100.0)
 
     # Debug printout
-    print corrBandBand
-    print covBandPC
-    print covEigenvalMat
+    #print corrBandBand
+    #print covBandPC
+    #print covEigenvalMat
 
     statText = ""
     statFileName = outputRasterFileName.split('.')[0] + "_statistics.txt"

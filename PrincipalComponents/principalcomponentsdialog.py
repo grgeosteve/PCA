@@ -73,8 +73,13 @@ class PrincipalComponentsDialog(QtGui.QDialog):
         self.propWidget.okButton.clicked.connect(self.calcPca)
 
     def showOpenDialog(self):
-        self.inFileName = str(QtGui.QFileDialog.getOpenFileName(self,
+        fileName = str(QtGui.QFileDialog.getOpenFileName(self,
                                                         "Input Raster File:"))
+
+        if len(fileName) is 0:
+            return
+        else:
+            self.inFileName = fileName;
 
         gdal.AllRegister()
         dataset = gdal.Open(str(self.inFileName))
@@ -83,7 +88,7 @@ class PrincipalComponentsDialog(QtGui.QDialog):
 
         self.propWidget.pcsNumComboBox.clear()
         for i in range(self.rasterBands, 0, -1):
-            self.pcsNumComboBox.addItem(str(i))
+            self.propWidget.pcsNumComboBox.addItem(str(i))
         self.propWidget.pcsNumComboBox.setDisabled(False)
 
         if self.inFileName is not None and self.outFileName is not None and self.rasterBands != 0:
@@ -102,7 +107,7 @@ class PrincipalComponentsDialog(QtGui.QDialog):
         fileName, filter = QtGui.QFileDialog.getSaveFileNameAndFilter(
             self, 'Output Raster File:', '', fileTypes)
 
-        if fileName is None:
+        if len(fileName) is 0:
             return
         else:
             # Extract the base filename without the suffix if it exists
